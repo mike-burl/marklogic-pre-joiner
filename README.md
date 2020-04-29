@@ -32,8 +32,9 @@ Gradle is used for deploying the MarkLogic-side of the data service and can also
 ## Using the Tool
 1. **Deploy the Data Service** : Use gradle to deploy the data service to the MarkLogic cluster with the command './gradlew mlLoadModules -i'.  Verify that a module with the name bulkLoader.xqy was inserted into the modules database.
 2. **Build the Prejoiner App** : Use gradle to build the prejoiner Java app with the command './gradlew build'.  This will automatically resolve all dependencies the tool needs to run.
-3. **Run the Prejoiner** : Use gradle to launch the prejoiner Java app with the command './gradlew runJava'.  Alternatively, you can launch the jar file that was built in the previous step directly for jobs that will take a very long time and need to be run in a headless state.
-4. **That's it!** : Monitor both the MarkLogic cluster and ingestion server to ensure resources are being utilized effectively.  Modify the thread and batch parameters as you see fit.
+3. **Sort the CSV Files** : Ensure that all CSV files, both primary and children, have been sorted into lexicographic order based on their primary key column(s)
+4. **Run the Prejoiner** : Use gradle to launch the prejoiner Java app with the command './gradlew runJava'.  Alternatively, you can launch the jar file that was built in the previous step directly for jobs that will take a very long time and need to be run in a headless state.
+5. **That's it!** : Monitor both the MarkLogic cluster and ingestion server to ensure resources are being utilized effectively.  Modify the thread and batch parameters as you see fit.
 
 ## Dependencies
 * [MarkLogic Server](https://developer.marklogic.com/products/marklogic-server/10.0 "MarkLogic 10 - MarkLogic Developer Community")
