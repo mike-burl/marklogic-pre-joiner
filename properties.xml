@@ -12,6 +12,7 @@
 	</connection>
 	<data>
 		<entity>test</entity>
+		<namespace>http://www.test.com/namespace</namespace>
 		<primaryCSV>
 			<location>data/PRIMARY.csv</location>
 			<header>PRIMARY_ID,PRIMARY_CHAR,FNAME,LNAME,SSN</header>
