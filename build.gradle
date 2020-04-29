@@ -1,0 +1,122 @@
+// These settings are used by the Java Client API and Data Services 
+buildscript {
+  repositories {
+    jcenter()
+    maven {url 'http://developer.marklogic.com/maven2/'}
+  }
+}
+plugins { 
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+    // This plugin allows you to create different environments
+    // for your gradle deploy. Each environment is represented
+    // by a gradle-${env}.properties file
+    // See https://github.com/stevesaliman/gradle-properties-plugin
+    // specify the env on the command line with:
+    // gradle -PenvironmentName=x ...
+    id 'net.saliman.properties' version '1.4.6'
+    // gradle
+    id "com.marklogic.ml-gradle" version "3.16.0"
+    // DataServices
+    id 'com.marklogic.ml-development-tools' version '4.2.0'
+}
+
+dependencies {
+    // java-client-api
+    compile group: 'com.marklogic', name: 'marklogic-client-api', version: '4.2.0'
+    // https://mvnrepository.com/artifact/org.jdom/jdom2
+    compile group: 'org.jdom', name: 'jdom2', version: '2.0.5'
+}
+
+repositories {
+    // java-client-api
+    jcenter()
+
+    mavenCentral()
+
+    // not sure if needed
+    maven {url 'http://developer.marklogic.com/maven2/'}
+}
+
+
+// setup JDK
+//set JAVA_HOME="C:\Program Files\Java\jdk1.8.0_144"
+// use
+// gradle classes
+// to assemble main classes
+
+version = '0.1'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src'
+        }
+    }
+}
+
+
+//ModuleInitTask
+//Providing the Module for an Endpoint Proxy (endpoint proxy in an XQuery)
+//(must create .api file first)
+//produces a skeleton .xqy (minimal)
+//gradle initMaterializeClaims
+task initMaterializeClaims(type: com.marklogic.client.tools.gradle.ModuleInitTask) {
+    endpointDeclarationFile = 'src/main/ml-modules/root/dataservices/test/materializeDS/materializeClaims.api'
+    moduleExtension = 'xqy'
+}
+
+// edit .xqy and return a document node
+// run gradle mlLoadModules to deploy endpoint proxy
+
+//EndpointProxiesGenTask
+//Generating the Proxy Service Class (Java interface)
+//(The Java code generation checks the endpoint module in the service directory to determine how to invoke the endpoint.)
+//(must create .json file first)
+//produces a java directory with class file
+//gradle generateMaterializeDS
+task generateMaterializeDS(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/ml-modules/root/dataservices/test/materializeDS/service.json'
+}
+
+//ModuleInitTask
+//Providing the Module for an Endpoint Proxy (endpoint proxy in an XQuery)
+//(must create .api file first)
+//produces a skeleton .xqy (minimal)
+//gradle initMaterializeClaims
+task initBulkLoaderDS(type: com.marklogic.client.tools.gradle.ModuleInitTask) {
+    endpointDeclarationFile = 'src/main/ml-modules/root/dataservices/bulkLoader/bulkLoader.api'
+    moduleExtension = 'xqy'
+}
+
+//EndpointProxiesGenTask
+//Generating the Proxy Service Class (Java interface)
+//(The Java code generation checks the endpoint module in the service directory to determine how to invoke the endpoint.)
+//(must create .json file first)
+//produces a java directory with class file
+//gradle generateMaterializeDS
+task generateBulkLoaderDS(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/ml-modules/root/dataservices/bulkLoader/bulkLoader.json'
+}
+
+task runjava(dependsOn: 'classes', type: JavaExec) {
+  classpath = sourceSets.test.runtimeClasspath
+  standardInput = System.in
+  main = 'com.marklogic.dataservices.prejoiner.PreJoinerApp'
+}
+
+task fatJar(type: Jar) {
+    classifier = 'all'
+    manifest {
+        attributes 'Implementation-Title': 'MLPS-PreJoiner',  
+            'Implementation-Version': 1,
+            'Main-Class': 'com.marklogic.dataservices.prejoiner.PreJoinerApp'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

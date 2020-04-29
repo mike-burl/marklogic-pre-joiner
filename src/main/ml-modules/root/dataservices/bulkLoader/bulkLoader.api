@@ -1,0 +1,10 @@
+{
+  "functionName" : "bulkLoadDocs",
+  "params" : [
+      {"name":"session",       "datatype":"session",       "multiple":false, "nullable":true},
+      {"name":"endpointState", "datatype":"xmlDocument", "multiple":false, "nullable":true},
+      {"name":"workUnit",      "datatype":"xmlDocument", "multiple":false, "nullable":true},
+      {"name":"input",         "datatype":"xmlDocument", "multiple":true,  "nullable":true}
+      ],
+  "return" : {"datatype":"xmlDocument", "multiple":false, "nullable":true}
+}
