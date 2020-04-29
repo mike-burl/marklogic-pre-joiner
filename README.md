@@ -6,7 +6,7 @@ This process occurs in three steps:
 2. The Java tool will scan the primary CSV file identified in the properties file to build an entity, extract the primary key, use that key to find any child rows in associated CSV files, then build a full XML document containing all the information.
 3. The XML document is then sent to [a bulk Data Service loader](https://docs.marklogic.com/guide/java/DataServices "Java Application Developer's Guide - Data Services") for batching and distributed loading into the MarkLogic cluster.
 
-##Configuring the Tool
+## Configuring the Tool
 The tool is driven by the properties.xml file found in the root directory.  It's split into two sections:
 1. Connection : The connection element contains all information used for connecting to your MarkLogic cluster
    * hosts : 
@@ -27,6 +27,6 @@ The tool is driven by the properties.xml file found in the root directory.  It's
       * name : 
       * separator : 
 
-##Using the Tool
+## Using the Tool
 
-##Dependencies
+## Dependencies
