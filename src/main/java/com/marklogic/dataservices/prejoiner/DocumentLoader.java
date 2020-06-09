@@ -22,9 +22,10 @@ public class DocumentLoader implements Runnable {
 	private final XMLOutputter xmlOutputter = new XMLOutputter();
 	private int batchSize;
 	private int retryAttempts = 3000;
-	private int numRetrieved;
 	private boolean doneRunning = false;
-	ArrayList<Document> collection = new ArrayList<Document>(); 
+	private int numRetrieved;
+	private String exitFlag = "Done";
+	ArrayList<Document> collection = new ArrayList<Document>();
 
     @Override
     public void run() {
@@ -32,24 +33,34 @@ public class DocumentLoader implements Runnable {
             do {
             	numRetrieved = queue.drainTo(collection, batchSize);
             	if(numRetrieved > 0) {
-            		try {
-            			load(dbclient, collection);
-            			collection.clear();
-            		} catch (Exception e) {
-            			e.printStackTrace();
+            		checkCollectionForExitFlag(collection);
+            		if(collection.size() > 0) {
+	            		try {
+	            			load(dbclient, collection);
+	            			collection.clear();
+	            		} catch (Exception e) {
+	            			e.printStackTrace();
+	            		}
             		}
             	} else {
             		Thread.sleep(100);
             	}
-            } while (numRetrieved > 0 || (!doneRunning && numRetrieved == 0));
+            } while (!doneRunning);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 		dbclient.release();
     }
     
-    public void doneRunning() {
-    	doneRunning = true;
+    private void checkCollectionForExitFlag(ArrayList<Document> collection) throws InterruptedException {
+    	for(int i = 0; i < collection.size(); i++) {
+    		if(exitFlag.equals(collection.get(i).getRootElement().getName())) {
+    			doneRunning = true;
+    			queue.put(collection.get(i));
+    			collection.remove(i);
+    			return;
+    		}
+    	}
     }
     
     public void load(DatabaseClient dbclient, ArrayList<Document> collection) throws Exception {	
