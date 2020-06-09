@@ -45,13 +45,13 @@ public class DocumentProducer implements Runnable {
         			stillProcessing = false;
         		}
         	}
+        	
+            Element doneElement = new Element("Done");
+            this.DocQueue.put(new Document().setContent(doneElement));
+            
         } catch (Exception e) {
         	e.printStackTrace();
             Thread.currentThread().interrupt();
-        }
-        
-        for(int i = 0; i < loaders.size(); i++) {
-        	loaders.get(i).doneRunning();
         }
     }
 	
@@ -99,9 +99,9 @@ public class DocumentProducer implements Runnable {
         for(int i = 0; i < csvConsumerProperties.size(); i++) {
         	this.csvConsumers.add(
         			new CSVRowConsumer(
-        					csvConsumerProperties.get(i).getChildText("location"), 
-        					csvConsumerProperties.get(i).getChildText("header"), 
-        					csvConsumerProperties.get(i).getChildText("primaryKey"), 
+        					csvConsumerProperties.get(i).getChildText("location"),
+        					csvConsumerProperties.get(i).getChildText("header"),
+        					csvConsumerProperties.get(i).getChildText("primaryKey"),
         					csvConsumerProperties.get(i).getChildText("name"),
         					csvConsumerProperties.get(i).getChildText("separator")
         			)
