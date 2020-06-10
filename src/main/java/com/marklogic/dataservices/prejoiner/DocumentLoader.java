@@ -28,7 +28,8 @@ public class DocumentLoader implements Runnable {
 	private String basicAuthFlag = "basic";
 	private String digestAuthFlag = "digest";
 	ArrayList<Document> collection = new ArrayList<Document>();
-
+	private Document entityProperties;
+	
     @Override
     public void run() {
         try {
@@ -65,16 +66,24 @@ public class DocumentLoader implements Runnable {
     	}
     }
     
-    public void load(DatabaseClient dbclient, ArrayList<Document> collection) throws Exception {	
-		Reader endpointState = new StringReader("");
-		Reader workUnit = new StringReader("");
+    public void load(DatabaseClient dbclient, ArrayList<Document> collection) throws Exception {
+    	Reader endpointState = new StringReader("");
+    	Reader workUnit = new StringReader(xmlOutputter.outputString(entityProperties));
 		Stream<Reader> input = collection.stream().map(doc -> new StringReader(xmlOutputter.outputString(doc)));
 		loader.bulkLoadDocs(null, endpointState, workUnit, input);
 	}
 
-    public DocumentLoader(BlockingQueue<Document> queue, String host, int batchSize, int port, String username, String password, String authContext) {
-        this.queue = queue;
-        this.batchSize = batchSize;
+    public DocumentLoader(BlockingQueue<Document> queue, String host, Element connectionProperties, Element entityProperties) {
+    	this.queue = queue;
+    	this.entityProperties = new Document(entityProperties);
+        
+        int port = Integer.parseInt(connectionProperties.getChildText("port"));
+        this.batchSize = Integer.parseInt(connectionProperties.getChildText("batchSize"));
+		String authContext = connectionProperties.getChildText("authContext");
+		
+		String username = connectionProperties.getChildText("username");
+		String password = connectionProperties.getChildText("password");
+		        
         if(basicAuthFlag.equals(authContext)){
 			dbclient = DatabaseClientFactory.newClient(
 				host,

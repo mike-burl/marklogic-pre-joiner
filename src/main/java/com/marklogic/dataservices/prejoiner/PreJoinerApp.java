@@ -31,36 +31,32 @@ public class PreJoinerApp {
 				
 		Element connectionProperties = getConnectionProperties(properties);
 		Element csvProperties = getCSVProperties(properties);
+		Element entityProperties = getEntityProperties(properties);
 		
-		ArrayList<DocumentLoader> loaders = createDocumentLoaders(DocQueue, connectionProperties);
-		createDocumentProducer(DocQueue, csvProperties, loaders);
+		createDocumentLoaders(DocQueue, connectionProperties, entityProperties);
+		createDocumentProducer(DocQueue, csvProperties);
 	}
 	
-	private static ArrayList<DocumentLoader> createDocumentLoaders(BlockingQueue<Document> DocQueue, Element connectionProperties) {
+	private static void createDocumentLoaders(BlockingQueue<Document> DocQueue, Element connectionProperties, Element entityProperties) {
 		List<Element> hosts = connectionProperties.getChild("hosts").getChildren();
 		
-		int port = Integer.parseInt(connectionProperties.getChildText("port"));
 		int numThreadsPerHost = Integer.parseInt(connectionProperties.getChildText("numThreadsPerHost"));
-		int batchSize = Integer.parseInt(connectionProperties.getChildText("batchSize"));
-		String authContext = connectionProperties.getChildText("authContext");
-		
-		String username = connectionProperties.getChildText("username");
-		String password = connectionProperties.getChildText("password");
 		
 		ArrayList<DocumentLoader> loaders = new ArrayList<DocumentLoader>();
 		for(int i = 0; i < hosts.size(); i++) {
 			for(int j = 0; j < numThreadsPerHost; j++) {
-				DocumentLoader loader = new DocumentLoader(DocQueue, hosts.get(i).getText(), batchSize, port, username, password, authContext);
+				DocumentLoader loader = new DocumentLoader(DocQueue, hosts.get(i).getText(), connectionProperties, entityProperties.clone().detach());
 				loaders.add(loader);
 				new Thread(loader).start();
 			}
 		}
-		return loaders;
+		
+		return;
 	}
 	
-	private static void createDocumentProducer(BlockingQueue<Document> DocQueue, Element csvProperties, ArrayList<DocumentLoader> loaders) {
+	private static void createDocumentProducer(BlockingQueue<Document> DocQueue, Element csvProperties) {
 		try {
-			new Thread(new DocumentProducer(DocQueue, csvProperties, loaders)).start();
+			new Thread(new DocumentProducer(DocQueue, csvProperties)).start();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -72,6 +68,10 @@ public class PreJoinerApp {
 	
 	private static Element getCSVProperties(Document properties) {
 		return properties.getRootElement().getChild("data");
+	}
+	
+	private static Element getEntityProperties(Document properties) {
+		return properties.getRootElement().getChild("data").getChild("entity");
 	}
 	
 	private static Document getProperties(String propertyFileLocation) {

@@ -27,7 +27,6 @@ public class DocumentProducer implements Runnable {
 	
 	private Element primaryElement;
 	private ArrayList<CSVRowConsumer> csvConsumers = new ArrayList<CSVRowConsumer>();
-	private ArrayList<DocumentLoader> loaders;
 
 	private final CSVRowConsumer primaryConsumer;
 
@@ -77,10 +76,9 @@ public class DocumentProducer implements Runnable {
 		return new Document().setContent(envelope);
 	}
 	
-	public DocumentProducer(BlockingQueue<Document> DocQueue, Element csvProperties, ArrayList<DocumentLoader> loaders) throws InterruptedException {
+	public DocumentProducer(BlockingQueue<Document> DocQueue, Element csvProperties) throws InterruptedException {
         this.DocQueue = DocQueue;
         this.csvProperties = csvProperties;
-        this.loaders = loaders;
         this.entity = csvProperties.getChildText("entity");
         
         Element primaryCSV = csvProperties.getChild("primaryCSV");
