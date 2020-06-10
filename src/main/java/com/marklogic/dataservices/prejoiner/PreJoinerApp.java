@@ -42,6 +42,7 @@ public class PreJoinerApp {
 		int port = Integer.parseInt(connectionProperties.getChildText("port"));
 		int numThreadsPerHost = Integer.parseInt(connectionProperties.getChildText("numThreadsPerHost"));
 		int batchSize = Integer.parseInt(connectionProperties.getChildText("batchSize"));
+		String authContext = connectionProperties.getChildText("authContext");
 		
 		String username = connectionProperties.getChildText("username");
 		String password = connectionProperties.getChildText("password");
@@ -49,7 +50,7 @@ public class PreJoinerApp {
 		ArrayList<DocumentLoader> loaders = new ArrayList<DocumentLoader>();
 		for(int i = 0; i < hosts.size(); i++) {
 			for(int j = 0; j < numThreadsPerHost; j++) {
-				DocumentLoader loader = new DocumentLoader(DocQueue, hosts.get(i).getText(), batchSize, port, username, password);
+				DocumentLoader loader = new DocumentLoader(DocQueue, hosts.get(i).getText(), batchSize, port, username, password, authContext);
 				loaders.add(loader);
 				new Thread(loader).start();
 			}

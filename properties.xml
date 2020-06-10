@@ -8,6 +8,7 @@
 		<batchSize>1</batchSize>
 		<username>CHANGEME</username>
 		<password>CHANGEME</password>
+		<authContext>basic</authContext> <!--digest or basic, default: digest-->
 	</connection>
 	<data>
 		<entity>test</entity>
