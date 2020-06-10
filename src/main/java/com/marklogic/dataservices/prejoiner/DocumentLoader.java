@@ -25,6 +25,8 @@ public class DocumentLoader implements Runnable {
 	private boolean doneRunning = false;
 	private int numRetrieved;
 	private String exitFlag = "Done";
+	private String basicAuthFlag = "basic";
+	private String digestAuthFlag = "digest";
 	ArrayList<Document> collection = new ArrayList<Document>();
 
     @Override
@@ -70,14 +72,22 @@ public class DocumentLoader implements Runnable {
 		loader.bulkLoadDocs(null, endpointState, workUnit, input);
 	}
 
-    public DocumentLoader(BlockingQueue<Document> queue, String host, int batchSize, int port, String username, String password) {
+    public DocumentLoader(BlockingQueue<Document> queue, String host, int batchSize, int port, String username, String password, String authContext) {
         this.queue = queue;
         this.batchSize = batchSize;
-		dbclient = DatabaseClientFactory.newClient(
-			host,
-			port,
-			new DatabaseClientFactory.BasicAuthContext(username, password)
-		);
+        if(basicAuthFlag.equals(authContext)){
+			dbclient = DatabaseClientFactory.newClient(
+				host,
+				port,
+				new DatabaseClientFactory.BasicAuthContext(username, password)
+			);
+        } else {
+        	dbclient = DatabaseClientFactory.newClient(
+    				host,
+    				port,
+    				new DatabaseClientFactory.DigestAuthContext(username, password)
+    			);
+        }
         loader = bulkLoaderDS.on(dbclient);
     }
 }
