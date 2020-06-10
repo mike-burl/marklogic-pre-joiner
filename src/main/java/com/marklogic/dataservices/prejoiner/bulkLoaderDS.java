@@ -50,7 +50,6 @@ public interface bulkLoaderDS {
                 .responseSingle(true, Format.XML)
                 );
             }
-
         }
 
         return new bulkLoaderDSImpl(db);
