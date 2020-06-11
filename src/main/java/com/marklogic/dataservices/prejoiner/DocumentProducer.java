@@ -10,6 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.supercsv.prefs.CsvPreference;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.StringBuilder;
@@ -76,6 +77,14 @@ public class DocumentProducer implements Runnable {
 		return new Document().setContent(envelope);
 	}
 	
+	private static CsvPreference getCsvPreference(String preference) {
+		if(preference.equals("STANDARD_PREFERENCE")) return CsvPreference.STANDARD_PREFERENCE;
+		else if(preference.equals("EXCEL_PREFERENCE")) return CsvPreference.EXCEL_PREFERENCE;
+		else if(preference.equals("EXCEL_NORTH_EUROPE_PREFERENCE")) return CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
+		else if(preference.equals("TAB_PREFERENCE")) return CsvPreference.TAB_PREFERENCE;
+		else return null;
+	}
+	
 	public DocumentProducer(BlockingQueue<Document> DocQueue, Element csvProperties) throws InterruptedException {
         this.DocQueue = DocQueue;
         this.csvProperties = csvProperties;
@@ -85,18 +94,22 @@ public class DocumentProducer implements Runnable {
         this.primaryName = primaryCSV.getChildText("name");
         this.primaryKeyIDs = primaryCSV.getChildText("primaryKey").split(",");
         
+        CsvPreference cp = getCsvPreference(csvProperties.getChildText("parser"));
+        
         primaryConsumer = new CSVRowConsumer(
+        		cp,
         		primaryCSV.getChildText("location"), 
         		primaryCSV.getChildText("header"), 
         		primaryCSV.getChildText("primaryKey"), 
         		this.primaryName,
         		primaryCSV.getChildText("separator")
         );
-        
+                
         List<Element> csvConsumerProperties = csvProperties.getChild("childCSVs").getChildren("childCSV");
         for(int i = 0; i < csvConsumerProperties.size(); i++) {
         	this.csvConsumers.add(
         			new CSVRowConsumer(
+        					cp,
         					csvConsumerProperties.get(i).getChildText("location"),
         					csvConsumerProperties.get(i).getChildText("header"),
         					csvConsumerProperties.get(i).getChildText("primaryKey"),

@@ -19,6 +19,7 @@ import org.jdom2.output.XMLOutputter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class PreJoinerApp {
 	
 	private static final XMLOutputter xmlOutputter = new XMLOutputter();

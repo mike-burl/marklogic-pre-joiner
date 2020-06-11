@@ -11,6 +11,7 @@
 		<authContext>digest</authContext> <!--digest or basic, default: digest-->
 	</connection>
 	<data>
+		<parser>STANDARD_PREFERENCE</parser>
 		<entity>
 			<entityName>test</entityName>
 			<namespace>http://www.test.com/namespace</namespace>

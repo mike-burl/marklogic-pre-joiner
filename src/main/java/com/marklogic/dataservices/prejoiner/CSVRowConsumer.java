@@ -3,6 +3,7 @@ package com.marklogic.dataservices.prejoiner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.jdom2.Element;
+import org.supercsv.prefs.CsvPreference;
 import java.lang.StringBuilder;
 
 public class CSVRowConsumer {
@@ -17,12 +18,12 @@ public class CSVRowConsumer {
 	String csvHeader;
 	String csvLocation;
 	
-	public CSVRowConsumer(String csvLocation, String csvHeader, String csvPrimaryKeyColumnNames, String csvEntityName, String separator) throws InterruptedException{
+	public CSVRowConsumer(CsvPreference cp, String csvLocation, String csvHeader, String csvPrimaryKeyColumnNames, String csvEntityName, String separator) throws InterruptedException{
 		this.csvLocation = csvLocation;
 		this.csvHeader = csvHeader;
 		this.csvPrimaryKeyColumnNames = csvPrimaryKeyColumnNames.split(",");
 		this.csvEntityName = csvEntityName;
-		csvRowProducer = new CSVRowProducer(csvQueue, csvLocation, csvHeader, this.csvPrimaryKeyColumnNames, csvEntityName, separator);
+		csvRowProducer = new CSVRowProducer(cp, csvQueue, csvLocation, csvHeader, this.csvPrimaryKeyColumnNames, csvEntityName, separator);
 		new Thread(csvRowProducer).start();
 		currentElement = csvQueue.take();
 	}
