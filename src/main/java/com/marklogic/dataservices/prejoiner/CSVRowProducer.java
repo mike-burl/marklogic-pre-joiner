@@ -26,14 +26,10 @@ public class CSVRowProducer implements Runnable {
 	String Header;
 	String EntityName;
 	String[] CSVHeaders;
-	String CSVSeparatorChar = ",";
 	boolean bufferFull = false;
 	boolean collectionReady = false;
 	boolean doneProcessing = false;
-	
-	int[] pkIndexPositions;
 	int sleepTime = 0;
-	
 	ICsvMapReader CSVFileReader;
 	Element CurrentCollection;
 	Element PutCollection;
@@ -114,28 +110,22 @@ public class CSVRowProducer implements Runnable {
         CurrentCollection.addContent(row);
 	}
 	
-	public CSVRowProducer(CsvPreference cp, BlockingQueue<Element> CSVQueue, String CSVFileName, String Header, String[] PrimaryKeyColumns, String EntityName, String separator) {
+	public CSVRowProducer(CsvPreference cp, BlockingQueue<Element> CSVQueue, String CSVFileName, String Header, String[] PrimaryKeyColumns, String EntityName) {
         this.CSVQueue = CSVQueue;
         this.PrimaryKeyColumns = PrimaryKeyColumns;
-        this.Header = Header;
         this.EntityName = EntityName;
-        this.CSVHeaders = Header.split(",");
-        this.CSVSeparatorChar = Pattern.quote(separator);
-        
-        this.pkIndexPositions = new int[this.PrimaryKeyColumns.length];
-        for(int i = 0; i < this.PrimaryKeyColumns.length; i++) {
-        	for(int j = 0; j < this.CSVHeaders.length; j++) {
-        		if(this.CSVHeaders[j].equals(this.PrimaryKeyColumns[i])) {
-        			this.pkIndexPositions[i] = j;
-        		}
-        	}
-        }
         
         File File = new File(CSVFileName);
         this.CSVFileName = CSVFileName;
         try {
         	CSVFileReader = new CsvMapReader(new BufferedReader(new FileReader(File)), cp);
-        } catch (FileNotFoundException e) {
+	        this.Header = Header;
+	        if(null == this.Header) {
+	        	this.CSVHeaders = CSVFileReader.getHeader(true);
+	        } else {
+	        	this.CSVHeaders = Header.split(",");
+	        }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

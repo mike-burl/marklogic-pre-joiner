@@ -24,12 +24,12 @@ public class PreJoinerApp {
 	
 	private static final XMLOutputter xmlOutputter = new XMLOutputter();
 	
-	public static void main(String[] args) throws IOException {		
+	public static void main(String[] args) throws IOException {
 		BlockingQueue<Document> DocQueue = new LinkedBlockingQueue<>(1000);
 		String propertyFileLocation = "properties.xml";
 		
 		Document properties = getProperties(propertyFileLocation);
-				
+		
 		Element connectionProperties = getConnectionProperties(properties);
 		Element csvProperties = getCSVProperties(properties);
 		Element entityProperties = getEntityProperties(properties);

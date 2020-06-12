@@ -15,15 +15,13 @@ public class CSVRowConsumer {
 	String exitFlag = "Done";
 	String[] csvPrimaryKeyColumnNames;
 	String csvEntityName;
-	String csvHeader;
 	String csvLocation;
 	
-	public CSVRowConsumer(CsvPreference cp, String csvLocation, String csvHeader, String csvPrimaryKeyColumnNames, String csvEntityName, String separator) throws InterruptedException{
+	public CSVRowConsumer(CsvPreference cp, String csvLocation, String csvHeader, String csvPrimaryKeyColumnNames, String csvEntityName) throws InterruptedException{
 		this.csvLocation = csvLocation;
-		this.csvHeader = csvHeader;
 		this.csvPrimaryKeyColumnNames = csvPrimaryKeyColumnNames.split(",");
 		this.csvEntityName = csvEntityName;
-		csvRowProducer = new CSVRowProducer(cp, csvQueue, csvLocation, csvHeader, this.csvPrimaryKeyColumnNames, csvEntityName, separator);
+		csvRowProducer = new CSVRowProducer(cp, csvQueue, csvLocation, csvHeader, this.csvPrimaryKeyColumnNames, csvEntityName);
 		new Thread(csvRowProducer).start();
 		currentElement = csvQueue.take();
 	}
@@ -33,8 +31,8 @@ public class CSVRowConsumer {
 			return currentElement;
 		} else {
 			Element returnElement = currentElement;
-			currentElement = csvQueue.take();	
-			return returnElement; 
+			currentElement = csvQueue.take();
+			return returnElement;
 		}
 	}
 	
