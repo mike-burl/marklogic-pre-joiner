@@ -26,25 +26,22 @@
 		</entity>
 		<primaryCSV>
 			<location>data/PRIMARY.csv</location>
-			<header>PRIMARY_ID,PRIMARY_CHAR,FNAME,LNAME,SSN</header>
+			<!--header>PRIMARY_ID,PRIMARY_CHAR,FNAME,LNAME,SSN</header-->
 			<primaryKey>PRIMARY_ID</primaryKey>
 			<name>PRIMARY</name>
-			<separator>,</separator>
 		</primaryCSV>
 		<childCSVs>
 			<childCSV>
 				<location>data/CLAIM.csv</location>
-				<header>PRIMARY_ID,PRIMARY_CHAR,VAL1,VAL2</header>
+				<!--header>PRIMARY_ID,PRIMARY_CHAR,VAL1,VAL2</header-->
 				<primaryKey>PRIMARY_ID</primaryKey>
 				<name>CLAIM</name>
-				<separator>,</separator>
 			</childCSV>
 			<childCSV>
 				<location>data/ADDRESS.csv</location>
-				<header>PRIMARY_ID,PRIMARY_CHAR,ADDRESS_TYPE,ADDRESS,CITY,STATE,ZIP</header>
+				<!--header>PRIMARY_ID,PRIMARY_CHAR,ADDRESS_TYPE,ADDRESS,CITY,STATE,ZIP</header-->
 				<primaryKey>PRIMARY_ID</primaryKey>
 				<name>ADDRESS</name>
-				<separator>,</separator>
 			</childCSV>
 		</childCSVs>
 	</data>

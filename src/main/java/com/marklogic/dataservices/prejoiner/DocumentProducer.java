@@ -101,8 +101,7 @@ public class DocumentProducer implements Runnable {
         		primaryCSV.getChildText("location"), 
         		primaryCSV.getChildText("header"), 
         		primaryCSV.getChildText("primaryKey"), 
-        		this.primaryName,
-        		primaryCSV.getChildText("separator")
+        		this.primaryName
         );
                 
         List<Element> csvConsumerProperties = csvProperties.getChild("childCSVs").getChildren("childCSV");
@@ -113,8 +112,7 @@ public class DocumentProducer implements Runnable {
         					csvConsumerProperties.get(i).getChildText("location"),
         					csvConsumerProperties.get(i).getChildText("header"),
         					csvConsumerProperties.get(i).getChildText("primaryKey"),
-        					csvConsumerProperties.get(i).getChildText("name"),
-        					csvConsumerProperties.get(i).getChildText("separator")
+        					csvConsumerProperties.get(i).getChildText("name")
         			)
         	);
         }
